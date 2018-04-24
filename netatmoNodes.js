@@ -61,10 +61,13 @@ module.exports = function(RED) {
 
         RED.nodes.createNode(this,config);
         this.creds = RED.nodes.getNode(config.creds);
-        this.image_id = config.image_id;
-        this.key = config.key;
         var node = this;
         this.on('input', function(msg) {
+			config.image_id = msg.image_id || config.image_id || '';
+            config.key = msg.key || config.key || '';
+            this.image_id = mustache.render(config.image_id, msg);
+            this.key = mustache.render(config.key, msg);
+			
             var netatmo = require('netatmo');
 
             var auth = {
